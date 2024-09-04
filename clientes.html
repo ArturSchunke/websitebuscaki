@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Clientes</title>
+</head>
+<body>
+    <h2>Solicitar Coletas</h2>
+    <form id="solicitacao-form">
+        <label for="descricao">Descrição:</label>
+        <textarea id="descricao" name="descricao" required></textarea>
+
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" required>
+
+        <button type="submit">Solicitar</button>
+    </form>
+    <h3>Solicitações</h3>
+    <div id="solicitacoes"></div>
+
+    <script>
+        document.getElementById('solicitacao-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const descricao = document.getElementById('descricao').value;
+            const nome = document.getElementById('nome').value;
+            const endereco = document.getElementById('endereco').value;
+
+            const solicitacao = {
+                descricao: descricao,
+                nome: nome,
+                endereco: endereco,
+                status: 'Em espera'
+            };
+
+            let solicitacoes = JSON.parse(localStorage.getItem('solicitacoes')) || [];
+            solicitacoes.push(solicitacao);
+            localStorage.setItem('solicitacoes', JSON.stringify(solicitacoes));
+
+            exibirSolicitacoes();
+            document.getElementById('solicitacao-form').reset();
+        });
+
+        function exibirSolicitacoes() {
+            const solicitacoes = JSON.parse(localStorage.getItem('solicitacoes')) || [];
+            const solicitacoesDiv = document.getElementById('solicitacoes');
+            solicitacoesDiv.innerHTML = '';
+            if (solicitacoes.length === 0) {
+                solicitacoesDiv.innerHTML = '<p>Nenhuma solicitação enviada.</p>';
+            } else {
+                const ultimaSolicitacao = solicitacoes[solicitacoes.length - 1];
+                const solicitacaoDiv = document.createElement('div');
+                solicitacaoDiv.innerHTML = `<p><strong>Descrição:</strong> ${ultimaSolicitacao.descricao}</p>
+                                            <p><strong>Nome:</strong> ${ultimaSolicitacao.nome}</p>
+                                            <p><strong>Endereço:</strong> ${ultimaSolicitacao.endereco}</p>
+                                            <p><strong>Status:</strong> ${ultimaSolicitacao.status}</p>`;
+                solicitacoesDiv.appendChild(solicitacaoDiv);
+            }
+        }
+
+        exibirSolicitacoes();
+    </script>
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+form, .coleta {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    width: 300px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+label, input, textarea, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+#map {
+    margin-top: 20px;
+}
+
+    </style>
+</body>
+</html>

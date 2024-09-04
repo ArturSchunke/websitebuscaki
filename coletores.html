@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Coletores</title>
+</head>
+<body>
+
+  <main class="main">
+
+    <h2>Coletas</h2>
+    <div id="coletas"></div>
+    <div id="detalhes-coleta" style="display: none;">
+        <h3>Detalhes da Coleta</h3>
+        <p><strong>Nome:</strong> <span id="detalhes-nome"></span></p>
+        <p><strong>Endereço:</strong> <span id="detalhes-endereco"></span></p>
+    </div>
+
+    <script>
+        function exibirColetas() {
+            const coletas = JSON.parse(localStorage.getItem('solicitacoes')) || [];
+            const coletasDiv = document.getElementById('coletas');
+            coletasDiv.innerHTML = '';
+            if (coletas.length === 0) {
+                coletasDiv.innerHTML = '<p>Você ainda não possui nenhum pedido</p>';
+            } else {
+                coletas.forEach((coleta, index) => {
+                    if (coleta.status === 'Em espera') {
+                        const coletaDiv = document.createElement('div');
+                        coletaDiv.innerHTML = `<p><strong>Nome:</strong> ${coleta.nome}</p>
+                                               <p><strong>Descrição:</strong> ${coleta.descricao}</p>
+                                               <button onclick="aceitarColeta(${index})">Aceitar</button>`;
+                        coletasDiv.appendChild(coletaDiv);
+                    }
+                });
+            }
+        }
+
+        function aceitarColeta(index) {
+            let coletas = JSON.parse(localStorage.getItem('solicitacoes')) || [];
+            coletas[index].status = 'Aceita';
+            localStorage.setItem('solicitacoes', JSON.stringify(coletas));
+            exibirColetas();
+            mostrarDetalhesColeta(coletas[index]);
+        }
+
+        function mostrarDetalhesColeta(coleta) {
+            document.getElementById('detalhes-nome').innerText = coleta.nome;
+            document.getElementById('detalhes-endereco').innerText = coleta.endereco;
+            document.getElementById('detalhes-coleta').style.display = 'block';
+        }
+
+        exibirColetas();
+    </script>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+form, .coleta {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    width: 300px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+label, input, textarea, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+    </style>
+</body>
+</html>
